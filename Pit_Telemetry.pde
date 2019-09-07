@@ -57,13 +57,13 @@ void setup() {
   }
 
   //COM connect button
-  cP5.addButton("CONNECT", 1, 400, 20, 80, 40);
+  cP5.addButton("CONNECT").setPosition(400,20).setSize(80,40).setColorBackground(color(44, 132, 255));
   //Ping the car, triggers the piezo on the car
-  cP5.addButton("PING", 1, 610, 20, 80, 40);
+  cP5.addButton("PING").setPosition(610,20).setSize(80,40).setColorBackground(color(44, 132, 255));
   //stop recording
-  cP5.addButton("STOP", 1, 700, 20, 80, 40);
+    cP5.addButton("STOP").setPosition(700,20).setSize(80,40).setColorBackground(color(44, 132, 255));
   //Enable emulation mode
-  cP5.addButton("EMULATION MODE", 1, 610, 70, 170, 40);
+     cP5.addButton("EMULATION MODE").setPosition(610,70).setSize(170,40).setColorBackground(color(44, 132, 255));
   initDisplayElements();
 
   setChartSettings(); //init chart
@@ -98,7 +98,7 @@ void draw() {
     if(mockupSerial){
     myString = mockupSerialFunction();
     }else{
-    myString = "";
+    myString = "0,0,0,0,0,0";
     }
   }
   nums = split(myString, ',');
@@ -244,6 +244,10 @@ void controlEvent(ControlEvent theEvent) {
     portName = "COM"+int(theEvent.getController().getValue());
   } else if (name.equals("EMULATION MODE")) {
     mockupSerial = !mockupSerial;
+    if(mockupSerial)
+   theEvent.getController().setColorBackground(color(53, 255, 73)); //set the background color of the button to green for user indication
+    else
+    theEvent.getController().setColorBackground(color(44, 132, 255));  
   } 
 
   if (eventActionDisplay) {
