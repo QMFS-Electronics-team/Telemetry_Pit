@@ -7,6 +7,10 @@ import processing.serial.*; //library to access serial comms
 //Check nums not used
 //place  logo in assets foldler
 
+//TODO: (07/09/2019)
+//Attempt to emulate the console box values and the tyre temps
+//Attempt to make the RPM dial spin 
+
 //Debugging console messages
 boolean printlineEnable=true;//Enable/disable println message to console [FOR DEBUGGING PURPOSES]
 boolean eventActionDisplay = false; //Enable/disable event and controller messages
@@ -15,15 +19,15 @@ boolean printBuffer = true;//Enable/disable print sensor value buffers
 //Serial comms
 Serial port;
 String Buffer; //holds the csv received 
-float[] sensorValues; //Refer to serialSpecification for corrosponding data 
-final int baudRate = 57600; //define baud rate of serial communicate
+public static float[] sensorValues; //Refer to serialSpecification for corrosponding data 
+final int baudRate = 19200; //define baud rate of serial communicate
 DropdownList commsdroplist; 
 String portName;
 boolean serialConnected = false;
-
 boolean mockupSerial = false;
 ControlP5 cP5;
 
+//Chart info
 static final int chartxPos = 870;
 static final int chartDefaultHeight = 100;
 static final int chartxBase = 110;
@@ -77,7 +81,9 @@ void setup() {
   }
 }
 
-
+/*------------------------------------------------------------------------
+ @Brief:Main loop
+ */
 int i = 0; // loop variable
 void draw() {
   background(0); // set background to be black color
@@ -101,6 +107,7 @@ void draw() {
     myString = "0,0,0,0,0,0";
     }
   }
+
   nums = split(myString, ',');
   // update line graph
   for (i=0; i<graphDisplays; i++) {
@@ -164,7 +171,9 @@ void centerWindow() {
   }
 }
 
-//configure graph settings
+/*------------------------------------------------------------------------
+ @Brief:Configure graph settings
+ */
 void setChartSettings() {
   LineGraphRPM.yLabel="";
   LineGraphRPM.xLabel="";
@@ -172,7 +181,7 @@ void setChartSettings() {
   LineGraphRPM.xMin=-100;
   LineGraphRPM.Title="Engine RPM";  
   LineGraphRPM.yDiv=4;  
-  LineGraphRPM.yMax=16; 
+  LineGraphRPM.yMax=16000; 
   LineGraphRPM.yMin=0;
   //----------------------
   LineGraphGear.yLabel="";
@@ -220,15 +229,19 @@ void drawConsole() {
   rect(790, 5, 1100, 50);
 }
 
-//function to handle CP5 interrupts
+/*------------------------------------------------------------------------
+ @Brief:function to handle CP5 interrupts
+ */
 void controlEvent(ControlEvent theEvent) {
-
   String name = theEvent.getController().getName();
   if (name.equals("CONNECT")) {
     try {
       port = new Serial(this, portName, baudRate);
       port.bufferUntil('\n');
       serialConnected=true;
+      //Indicate to the user that the com port connection is secured
+      theEvent.getController().setCaptionLabel("Connected"); 
+      theEvent.getController().setColorBackground(color(53, 255, 73));
     }
     catch(Exception e) {
       if (printlineEnable)
@@ -260,7 +273,9 @@ void controlEvent(ControlEvent theEvent) {
   }
 }
 
-//function to handle serial interupts
+/*------------------------------------------------------------------------
+ @Brief:function to handle serial interupts
+ */
 void serialEvent(Serial port) {
   Buffer = port.readString();//read csv into buffer
   sensorValues = float(split(Buffer, ','));//Separate csv
@@ -271,11 +286,11 @@ void serialEvent(Serial port) {
 void updateTyreThermals() {
   textSize(17);
   //left side text
-  text("40C", 60, 210);
-  text("40C", 60, 425);
+  text("-C", 60, 210); //Front left tyre
+  text("-C", 60, 425); //Front right tyre
   //right side text
-  text("40C", 230, 210);
-  text("40C", 230, 425);
+  text("-C", 230, 210); //Bottom left tyre
+  text("-C", 230, 425); //Bottom right tyre
 }
 /*------------------------------------------
  @Brief: Update values within the console box
@@ -286,18 +301,20 @@ void updateConsoleBox() {
     //left side text
     text("SENSORS READING", 260, 525);
     textSize(18);
-    //text("RPM: "+nf(float(nums[1]),0,2),270,600);
     text("RPM: "+sensorValues[0], 270, 600);
     text("GEAR: "+sensorValues[1], 270, 620);
-    text("Water Temp: FIX this", 270, 660);
-    text("Air Temp: FIX this", 270, 680);
-    text("Oil Pressure: FIX this", 270, 700);
+    text("Throttle position: "+sensorValues[2], 270, 640);
+    text("Speed: "+sensorValues[3]+" mph", 270, 660);
+    text("Water Temp: FIX this", 270, 70);
+    text("Air Temp: FIX this", 270,720);
+    text("Oil Pressure: FIX this", 270, 740);
+    text("MAP: FIX this", 270, 760);
     //--------------------------------------------------
     //right side text
     text("Battery Voltage: "+sensorValues[4]+" V", 700, 600);
-    text("Battery Status: LOW ", 700, 620);
+    text("Battery Status: - ", 700, 620);
     text("Baud rate: "+baudRate, 700, 640);
-    text("Ambient Temperature: 20C", 700, 660);
+    text("Ambient Temperature: -C", 700, 660);
   }
   catch(Exception e) {
     if (printlineEnable)

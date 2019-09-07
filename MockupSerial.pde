@@ -20,11 +20,15 @@ String mockupSerialFunction() {
     //each incremental case indicates increments in csv e.g case 0 corrosponds to position 1 in csv
     switch (i) {
     case 0: //Engine RPM
-      r += mockupValue/7+","; //using divisor such as 7 to fit triangle wave on small scale graphs
+      float tempRPM=8000+(mockupValue*50);
+      r += tempRPM+","; //using divisor such as 7 to fit triangle wave on small scale graphs
+      sensorValues[0]=tempRPM;
       break;
     case 1: //GEAR
     if(delayIncrementer<10){
-      r += lastEmulatedGearVal+",";
+      float tempGear = lastEmulatedGearVal;
+      r += tempGear+",";
+      sensorValues[1]=tempGear;
        delayIncrementer+=1;
     }else{
       float temp = random(6);
@@ -34,16 +38,20 @@ String mockupSerialFunction() {
     }
       break; 
     case 2: //Throttle
-      r += 680*cos(mockupValue*(2*3.14)/1000)+",";
+    float tempThrottle = 680*cos(mockupValue*(2*3.14)/1000);
+      r += tempThrottle+",";
+      sensorValues[2]=tempThrottle;
       break;
     case 3://Speed
-      r += mockupValue/4+",";
+    float tempSpeed = mockupValue/4;
+      r += tempSpeed+",";
+      sensorValues[3]=tempSpeed;
       break;
-    case 4:
-      r += mockupValue/16+",";
+    case 4: // Battery voltage
+       sensorValues[4]= 11 + random(-2,2);
       break;
     case 5:
-      r += mockupValue/32+",";
+      
       break;
     }
     if (i < 7)
