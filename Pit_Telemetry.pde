@@ -8,7 +8,7 @@ import processing.serial.*; //library to access serial comms
 //place  logo in assets foldler
 
 //TODO: (07/09/2019)
-//Attempt to emulate the console box values and the tyre temps
+//Attempt to repair the control box jittery effect when performing emulation
 //Attempt to make the RPM dial spin 
 
 //Debugging console messages
@@ -16,10 +16,14 @@ boolean printlineEnable=true;//Enable/disable println message to console [FOR DE
 boolean eventActionDisplay = false; //Enable/disable event and controller messages
 boolean printBuffer = true;//Enable/disable print sensor value buffers
 
+//Sensor buffer
+public static float[] sensorValues = new float[10]; //Refer to serialSpecification for corrosponding data 
+//RPM visual Gauge variables 
+float RPMGaugeRotation = 0;
+static final float RPMGaugeMax = 4.62512;
 //Serial comms
 Serial port;
 String Buffer; //holds the csv received 
-public static float[] sensorValues = new float[10]; //Refer to serialSpecification for corrosponding data 
 final int baudRate = 19200; //define baud rate of serial communicate
 DropdownList commsdroplist; 
 String portName;
@@ -92,8 +96,13 @@ void draw() {
   image(imgLogo, 20, 20, 240, 67);
   image(imgTopViewCar, 70, 140, 122, 334);
   image(gaugeDisplay, 350, 200, 255, 253);
-  image(gaugeNeedle, 406, 310, 129*0.7, 125*0.7);
-
+  
+  push(); //save the rotation and translation of previous code, as rotation function will rotate subsequent code
+  translate(475,332); //move the origin to coordinates in the middle of the gauge
+  rotate(RPMGaugeRotation); // using radiana works better than degrees
+  image(gaugeNeedle, -100, -100, 200, 200);//transparant image must be centered and in form of a square 
+  pop(); //restore rotation and translation of previous code
+  
   /* Read serial and update values */
   //if (mockupSerial || serialPort.available() > 0) {
   String myString = ""; //temporary buffer used when no serial connected
@@ -161,6 +170,7 @@ void draw() {
   if (serialConnected||mockupSerial) {
     updateConsoleBox();
     updateTyreThermals();
+    updateRPMGauge();
   }
 }
 
@@ -283,6 +293,10 @@ void serialEvent(Serial port) {
     println(Buffer);
 }
 
+void updateRPMGauge() {
+  RPMGaugeRotation = map(sensorValues[0],0,16000,0,RPMGaugeMax);
+}
+
 void updateTyreThermals() {
   textSize(17);
   //left side text
@@ -301,11 +315,11 @@ void updateConsoleBox() {
     //left side text
     text("SENSORS READING", 260, 525);
     textSize(18);
-    text("RPM: "+sensorValues[0], 270, 600);
+    text("RPM:     "+sensorValues[0], 270, 600);
     text("GEAR: "+sensorValues[1], 270, 620);
     text("Throttle position: "+sensorValues[2], 270, 640);
     text("Speed: "+sensorValues[3]+" mph", 270, 660);
-    text("Water Temp: FIX this", 270, 70);
+    text("Water Temp: FIX this", 270, 700);
     text("Air Temp: FIX this", 270,720);
     text("Oil Pressure: FIX this", 270, 740);
     text("MAP: FIX this", 270, 760);
@@ -331,5 +345,5 @@ void loadImages() {
   imgLogo = loadImage("assets/qmfsLogo.png"); 
   imgTopViewCar = loadImage("assets/adjustCarColor.png");
   gaugeDisplay = loadImage("assets/Gauge1.png");
-  gaugeNeedle = loadImage("assets/needle.png");
+  gaugeNeedle = loadImage("assets/needle_V2.png");
 }
