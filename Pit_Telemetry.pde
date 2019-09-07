@@ -19,7 +19,7 @@ boolean printBuffer = true;//Enable/disable print sensor value buffers
 //Serial comms
 Serial port;
 String Buffer; //holds the csv received 
-public static float[] sensorValues; //Refer to serialSpecification for corrosponding data 
+public static float[] sensorValues = new float[10]; //Refer to serialSpecification for corrosponding data 
 final int baudRate = 19200; //define baud rate of serial communicate
 DropdownList commsdroplist; 
 String portName;
@@ -158,7 +158,7 @@ void draw() {
     LineGraphSpeed.LineGraph(lineGraphSampleNumbers, lineGraphValues[3]);
   }
 
-  if (serialConnected) {
+  if (serialConnected||mockupSerial) {
     updateConsoleBox();
     updateTyreThermals();
   }
