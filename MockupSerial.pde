@@ -8,7 +8,7 @@ String mockupSerialFunction() {
   mockupValue = (mockupValue + mockupDirection);
   if (mockupValue > 100)
     mockupDirection = -10;
-  else if (mockupValue < -100)
+  else if (mockupValue <= 0)
     mockupDirection = 10;
    
   String r = ""; //initialising csv string
@@ -19,13 +19,13 @@ String mockupSerialFunction() {
       r += mockupValue/7+" "; //using divisor such as 7 to fit triangle wave on small scale graphs
       break;
     case 1:
-      r += 6*cos(mockupValue*(2*3.14)/1000)+" ";
+      r += random(6)+" ";
       break;
     case 2:
-      r += mockupValue/4+" ";
+      r += 680*cos(mockupValue*(2*3.14)/1000)+" ";
       break;
     case 3:
-      r += mockupValue/8+" ";
+      r += mockupValue/4+" ";
       break;
     case 4:
       r += mockupValue/16+" ";

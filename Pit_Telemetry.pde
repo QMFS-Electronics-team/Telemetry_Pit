@@ -82,13 +82,14 @@ void setup(){
 
 int i = 0; // loop variable
 void draw(){
-  background(0);
-  drawConsole();
+  background(0); // set background to be black color
+  drawConsole(); 
   //draw images loaded from buffer
   image(imgLogo,20,20,240,67);
   image(imgTopViewCar,70,140,122,334);
   image(gaugeDisplay,350,200,255,253);
   image(gaugeNeedle,406,310,129*0.7,125*0.7);
+  
   /* Read serial and update values */
   //if (mockupSerial || serialPort.available() > 0) {
     String myString = ""; //temporary buffer used when no serial connected
@@ -152,6 +153,7 @@ void draw(){
   updateTyreThermals();
   }
 }
+
 
 void centerWindow(){
   if(frame!=null){
@@ -271,8 +273,9 @@ text("40C", 60, 425);
 text("40C", 230, 210);
 text("40C", 230, 425);
 }
-
-//update values within the console box
+/*------------------------------------------
+@Brief: Update values within the console box
+*/
 void updateConsoleBox(){
 try{
 textSize(25);
@@ -299,8 +302,11 @@ text("Ambient Temperature: 20C",700,660);
     }
 }
 
+/*------------------------------------------------------------------------
+@Brief:Insert the images from resource folder, based on relative posistion
+*/
 void loadImages(){
-  //insert the images
+  
   imgLogo = loadImage("assets/qmfsLogo.png"); 
   imgTopViewCar = loadImage("assets/adjustCarColor.png");
   gaugeDisplay = loadImage("assets/Gauge1.png");
