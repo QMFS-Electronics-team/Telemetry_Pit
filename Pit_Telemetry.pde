@@ -294,7 +294,7 @@ void serialEvent(Serial port) {
 }
 
 void updateRPMGauge() {
-  RPMGaugeRotation = map(sensorValues[0],0,16000,0,RPMGaugeMax);
+  RPMGaugeRotation = map(sensorValues[0],0,18000,0,RPMGaugeMax);
 }
 
 void updateTyreThermals() {
