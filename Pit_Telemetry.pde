@@ -9,7 +9,7 @@ import processing.serial.*; //library to access serial comms
 
 //TODO: (07/09/2019)
 //Attempt to repair the control box jittery effect when performing emulation
-//Attempt to make the RPM dial spin 
+//Ability to record the values into a csv file 
 
 //Debugging console messages
 boolean printlineEnable=true;//Enable/disable println message to console [FOR DEBUGGING PURPOSES]
@@ -17,6 +17,7 @@ boolean eventActionDisplay = false; //Enable/disable event and controller messag
 boolean printBuffer = true;//Enable/disable print sensor value buffers
 
 //Sensor buffer
+// RPM=0, GEAR,TPS, SPEED_MPH,WATER_TEMP,AIR_TEMP, MAP,BATT_VOLT, AMBIENT_TEMP,BUFFER_SIZE  //data storage order
 public static float[] sensorValues = new float[10]; //Refer to serialSpecification for corrosponding data 
 //RPM visual Gauge variables 
 float RPMGaugeRotation = 0;
@@ -29,7 +30,7 @@ DropdownList commsdroplist;
 String portName;
 boolean serialConnected = false;
 boolean mockupSerial = false;
-ControlP5 cP5;
+ControlP5 cP5; //create object of GUI class
 
 //Chart info
 static final int chartxPos = 870;
@@ -48,12 +49,13 @@ final int graphDisplays = 4;
 
 //image logo
 PImage imgLogo, imgTopViewCar, gaugeDisplay, gaugeNeedle;
-
+/*------------------------------------------------------------------------------------------------------------------------------------------------
+*/
 void setup() {
   surface.setTitle("QMFS Data Acquisition Viewer"); // Software Title
   size(1920, 1000);//define the size of windows
   centerWindow();
-  background(0);//set background to RGB value of 0,0,0
+  background(0);//set background to RGB value of 0,0,0 -> BLACK background
   loadImages(); //load the images into buffer from file
   cP5 = new ControlP5(this);
 
@@ -85,7 +87,7 @@ void setup() {
   }
 }
 
-/*------------------------------------------------------------------------
+/*------------------------------------------------------------------------------------------------------------------------------------------------
  @Brief:Main loop
  */
 int i = 0; // loop variable
@@ -315,17 +317,17 @@ void updateConsoleBox() {
     //left side text
     text("SENSORS READING", 260, 525);
     textSize(18);
-    text("RPM:     "+sensorValues[0], 270, 600);
-    text("GEAR: "+sensorValues[1], 270, 620);
-    text("Throttle position: "+sensorValues[2], 270, 640);
-    text("Speed: "+sensorValues[3]+" mph", 270, 660);
-    text("Water Temp: FIX this", 270, 700);
-    text("Air Temp: FIX this", 270,720);
-    text("Oil Pressure: FIX this", 270, 740);
-    text("MAP: FIX this", 270, 760);
+    text("RPM:     "+sensorValues[0], 300, 600);
+    text("GEAR: "+sensorValues[1], 300, 620);
+    text("Throttle position: "+sensorValues[2], 300, 640);
+    text("Speed: "+sensorValues[3]+" mph", 300, 660);
+    text("Water Temp: FIX this", 300, 700);
+    text("Air Temp: FIX this", 300,720);
+    text("Oil Pressure: No sensor value", 300, 740);
+    text("MAP: FIX this", 300, 760);
     //--------------------------------------------------
     //right side text
-    text("Battery Voltage: "+sensorValues[4]+" V", 700, 600);
+    text("Battery Voltage: "+sensorValues[7]+" V", 700, 600);
     text("Battery Status: - ", 700, 620);
     text("Baud rate: "+baudRate, 700, 640);
     text("Ambient Temperature: -C", 700, 660);
